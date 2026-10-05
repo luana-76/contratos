@@ -1,0 +1,15 @@
+# Requer um Ingress Controller NGINX (veja README). Apenas rotas de negócio são expostas;
+# /metrics, /health e /ready NÃO são roteados para fora do cluster.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: apis
+  namespace: contratos
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /contracts
+            pathType: Prefix
+            backend: { service: { name: contratos, port: { number: 80 } } }

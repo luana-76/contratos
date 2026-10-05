@@ -1,0 +1,29 @@
+groups:
+  - name: apis
+    rules:
+      - alert: ApiDown
+        expr: up == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: "{{ $labels.job }} indisponível"
+      - alert: HighErrorRate
+        expr: |
+          sum by (job) (rate(http_request_duration_ms_count{status_code=~"5.."}[5m]))
+            / sum by (job) (rate(http_request_duration_ms_count[5m])) > 0.05
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.job }}: mais de 5% de respostas 5xx"
+      - alert: HighLatencyP95
+        expr: histogram_quantile(0.95, sum by (job, le) (rate(http_request_duration_ms_bucket[5m]))) > 1000
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.job }}: p95 acima de 1s"
+      - alert: EventLoopLagHigh
+        expr: nodejs_eventloop_lag_p99_seconds > 0.5
+        for: 2m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.job }}: event loop bloqueado (p99 > 500ms)"

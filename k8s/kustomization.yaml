@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - 00-namespace.yaml
+  - 01-config.yaml
+  - 02-data-stores.yaml
+  - 03-contratos.yaml
+  - 04-ingress.yaml
+  - 05-networkpolicies.yaml
+  - 06-monitoring.yaml
+
+# O pipeline de CD troca nome/tag da imagem. Localmente (kind/minikube) usamos a tag "local".
+images:
+  - name: contratos-api
+    newTag: local

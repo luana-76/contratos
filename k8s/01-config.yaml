@@ -1,0 +1,14 @@
+# Configuração não-sensível. As credenciais (Secret "db-credentials") NÃO ficam no Git:
+# são criadas por scripts/k8s-deploy.sh a partir do arquivo .env.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: contratos
+data:
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  PORT: "3000"
+  NODE_ENV: production
